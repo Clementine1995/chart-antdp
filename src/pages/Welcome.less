@@ -1,0 +1,33 @@
+@import '~antd/lib/style/themes/default.less';
+
+.pre {
+  margin: 12px 0;
+  padding: 12px 20px;
+  background: @input-bg;
+  box-shadow: @card-shadow;
+}
+.regionChartHeader{
+  display: flex;
+  justify-content: space-between;
+  :global {
+    .ant-picker{
+      margin-right: 8px;
+    }
+  }
+}
+.regionChartMain{
+  margin-top: 20px;
+}
+.regionTable{
+  display: block;
+  .regionTableHeader{
+    :global {
+      .ant-picker{
+        margin-right: 8px;
+      }
+    }
+  }
+  .regionTableMain{
+    margin-top: 20px;
+  }
+}
