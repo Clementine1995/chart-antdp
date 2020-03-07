@@ -7,7 +7,7 @@ This project is initialized with [Ant Design Pro](https://pro.ant.design). Follo
 Install `node_modules`:
 
 ```bash
-npm install
+npm install --registry=https://registry.npm.taobao.org
 ```
 
 or
