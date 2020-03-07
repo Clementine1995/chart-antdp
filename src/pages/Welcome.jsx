@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { Table, Radio , DatePicker , Button , message , Result} from 'antd';
+import Link from 'umi/link';
 
 
 import { Chart, Geom, Axis, Tooltip } from "bizcharts";
@@ -168,7 +169,6 @@ export default () => {
   return (
     <PageHeaderWrapper>
       <div className={styles.pre}>
-        
         <div className={styles.regionChartHeader} >
           <div>
             <RangePicker onChange={chartDateChg}/>
@@ -217,10 +217,22 @@ export default () => {
         </div>
         <Table dataSource={tableData} className={styles.regionTableMain} loading={loading} bordered pagination={paginationProps}>
           <Column title="domain" dataIndex="domain" key="domain" sorter={(a, b) => a.domain > b.domain}/>
-          <Column title="北京" dataIndex="bjEvaluationValue" key="bjEvaluationValue" sorter={(a, b) => a.bjEvaluationValue - b.bjEvaluationValue}/>
-          <Column title="上海" dataIndex="shEvaluationValue" key="shEvaluationValue" sorter={(a, b) => a.shEvaluationValue - b.shEvaluationValue}/>
-          <Column title="浙江" dataIndex="zjEvaluationValue" key="zjEvaluationValue" sorter={(a, b) => a.zjEvaluationValue - b.zjEvaluationValue}/>
-          <Column title="广东" dataIndex="gdEvaluationValue" key="gdEvaluationValue" sorter={(a, b) => a.gdEvaluationValue - b.gdEvaluationValue}/>
+          <Column title="北京" dataIndex="bjEvaluationValue" key="bjEvaluationValue" sorter={(a, b) => a.bjEvaluationValue - b.bjEvaluationValue}
+            render={(text, record) => (
+              <Link to={`/detail?type=1&domain=${record.domain}&startDt=${tableRange[0]}&endDt=${tableRange[1]}`}>{record.bjEvaluationValue}</Link>
+            )} />
+          <Column title="上海" dataIndex="shEvaluationValue" key="shEvaluationValue" sorter={(a, b) => a.shEvaluationValue - b.shEvaluationValue} 
+            render={(text, record) => (
+              <Link to={`/detail?type=2&domain=${record.domain}&startDt=${tableRange[0]}&endDt=${tableRange[1]}`}>{record.shEvaluationValue}</Link>
+            )} />
+          <Column title="浙江" dataIndex="zjEvaluationValue" key="zjEvaluationValue" sorter={(a, b) => a.zjEvaluationValue - b.zjEvaluationValue}
+            render={(text, record) => (
+              <Link to={`/detail?type=3&domain=${record.domain}&startDt=${tableRange[0]}&endDt=${tableRange[1]}`}>{record.zjEvaluationValue}</Link>
+            )} />
+          <Column title="广东" dataIndex="gdEvaluationValue" key="gdEvaluationValue" sorter={(a, b) => a.gdEvaluationValue - b.gdEvaluationValue} 
+            render={(text, record) => (
+              <Link to={`/detail?type=4&domain=${record.domain}&startDt=${tableRange[0]}&endDt=${tableRange[1]}`}>{record.gdEvaluationValue}</Link>
+            )}/>
           {/* <Column
             title="Action"
             key="action"
@@ -235,3 +247,4 @@ export default () => {
     </PageHeaderWrapper>
   )
 };
+

@@ -120,14 +120,9 @@ export default {
             {
               name: 'region.region1',
               icon: 'home',
-              path: '/region1',
-              component: './region/region1',
-            },
-            {
-              name: 'region.region2',
-              icon: 'home',
-              path: '/region2',
-              component: './region/region2',
+              path: '/detail',
+              hideInMenu: true,
+              component: './region/index',
             },
             {
               component: './404',
