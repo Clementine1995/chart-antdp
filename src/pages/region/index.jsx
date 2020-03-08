@@ -160,7 +160,7 @@ const Region1 = props => {
         />
       }
     </div>
-    <div className={`${styles.pre} ${styles.regionTable}`}>
+    <div className={`${styles.pre} ${styles.detailTable}`}>
       <Table
         dataSource={tableData}
         className={styles.regionTableMain}
