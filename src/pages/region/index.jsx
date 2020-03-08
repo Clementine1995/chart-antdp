@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { message , Table, Result} from 'antd';
+import { message , Table, Result, Descriptions } from 'antd';
+
 
 import {
   Chart,
@@ -10,27 +11,51 @@ import {
 } from "bizcharts";
 import styles from './index.less';
 
-import { queryRegion } from './service';
+import { getDetailLineChart, getDetailForm } from './service';
 
 const { Column } = Table;
-const handleQuery = async () => {
+
+
+const queryChartData = async params => {
   try {
-    const data = await queryRegion({
-      start: '',
-      end: ''
-    });
-    return data;
+    const result = await getDetailLineChart(params);
+    return result;
   } catch (error) {
     message.error('获取数据失败');
     return []
   }
 };
 
+const queryTableData = async params => {
+  try {
+    const result = await getDetailForm(params);
+    return result;
+  } catch (error) {
+    message.error('获取数据失败');
+    return []
+  }
+}
+
+const reflectMap = {
+  '1': '北京',
+  '2': '上海',
+  '3': '浙江',
+  '4': '广东'
+}
+
 const cols = {
-  nums: {
-    min: 0
+  evaluation: {
+    min: 0,
+    max: 1
   }
 };
+
+function formatChart (data) {
+  if (data && data.length) {
+    return data.filter(item => item.evaluation)
+  } 
+  return []
+}
 
 const Region1 = props => {
   const [chartData, setChartData] = useState([])
@@ -49,64 +74,79 @@ const Region1 = props => {
 
   const { query: routeInfo } = props.location
 
-  console.log(routeInfo)
 
   function tablePageChange (page) {
     tableQuery(page)
   }
-  // useEffect(() => {
-  //   handleQuery().then(data => {
-  //     setChartData(data)
-  //   })
+
+  useEffect(() => {
+    queryChartData({
+      startDt: routeInfo.startDt,
+      endDt: routeInfo.endDt,
+      domain: routeInfo.domain,
+      placeType: routeInfo.type
+    }).then(res => {
+      const { data } = res
+      const formated = formatChart(data)
+
+      setChartData(formated)
+    }).catch(error => {
+      message.error(error)
+    })
     
-  // }, [])
+    tableQuery()
+  }, [])
 
   function tableQuery (page = 1) {
-    // setLoading(true)
-    // queryTableData({
-    //   size: 20,
-    //   current: page
-    // }).then(res => {
-    //   console.log(res)
-    //   const { data } = res
-    //   if (data.records && data.records.length) {
-    //     setTableData(data.records.map((item, index) => {
-    //       item.key = index
-    //       return item
-    //     }))
-    //     setpageInfo({
-    //       total: data.total,
-    //       current: data.current
-    //     })
-    //   } else {
-    //     setTableData([])
-    //     setpageInfo({
-    //       total: 0,
-    //       current: 1
-    //     })
-    //   }
+
+    setLoading(true)
+    queryTableData({
+      startDt: routeInfo.startDt,
+      endDt: routeInfo.endDt,
+      domain: routeInfo.domain,
+      placeType: routeInfo.type,
+      size: 20,
+      current: page
+    }).then(res => {
+      const { data } = res
+      if (data.records && data.records.length) {
+        setTableData(data.records.map((item, index) => {
+          item.key = index
+          return item
+        }))
+        setpageInfo({
+          total: data.total,
+          current: data.current
+        })
+      } else {
+        setTableData([])
+        setpageInfo({
+          total: 0,
+          current: 1
+        })
+      }
       
-    // }).finally(() => {
-    //   setLoading(false)
-    // })
+    }).finally(() => {
+      setLoading(false)
+    })
   }
 
 
-  return (<PageHeaderWrapper title="Title">
+  return (<PageHeaderWrapper title={`${routeInfo.domain}-${reflectMap[routeInfo.type]}(${routeInfo.startDt}/${routeInfo.endDt})`}>
     <div className={styles.pre}>
       {
         chartData.length ? <Chart height={400} data={chartData} scale={cols} forceFit>
-          <Axis name="time" />
-          <Axis name="nums" />
+          <Axis name="dt" />
+          <Axis name="evaluation" />
           <Tooltip
             crosshairs={{
               type: "y"
             }}
           />
-          <Geom type="line" position="time*nums" size={2} />
+          <Geom type="line" position="dt*evaluation" size={2} />
           <Geom
             type="point"
-            position="time*nums"
+            position="dt*evaluation"
             size={4}
             shape="circle"
             style={{
@@ -121,16 +161,33 @@ const Region1 = props => {
       }
     </div>
     <div className={`${styles.pre} ${styles.regionTable}`}>
-      <Table dataSource={tableData} className={styles.regionTableMain} loading={loading} bordered pagination={paginationProps}>
-        <Column title="时间" dataIndex="domain" key="domain" sorter={(a, b) => a.domain > b.domain}/>
-        <Column title="dns" dataIndex="bjEvaluationValue" key="bjEvaluationValue" sorter={(a, b) => a.bjEvaluationValue - b.bjEvaluationValue} />
-        <Column title="ip" dataIndex="shEvaluationValue" key="shEvaluationValue" sorter={(a, b) => a.shEvaluationValue - b.shEvaluationValue} />
-        <Column title="port" dataIndex="zjEvaluationValue" key="zjEvaluationValue" sorter={(a, b) => a.zjEvaluationValue - b.zjEvaluationValue} />
-        <Column title="tcp_above" dataIndex="gdEvaluationValue" key="gdEvaluationValue" sorter={(a, b) => a.gdEvaluationValue - b.gdEvaluationValue} />
+      <Table
+        dataSource={tableData}
+        className={styles.regionTableMain}
+        loading={loading}
+        expandable={{
+          expandedRowRender: record => expandRender(record)
+        }}
+        bordered
+        pagination={paginationProps}>
+        <Column title="时间" dataIndex="dt" key="dt" />
+        <Column title="dns" dataIndex="dnsNum" key="dnsNum" />
+        <Column title="ip" dataIndex="ipNum" key="ipNum" />
+        <Column title="port" dataIndex="portNum" key="portNum" />
+        <Column title="tcp_above" dataIndex="tcpAbove" key="tcpAbove" />
       </Table>
     </div>
   </PageHeaderWrapper>)
 } ;
+
+function expandRender(record) {
+  return (<Descriptions title="详细信息">
+    <Descriptions.Item span={3} label="DnsIp">{ record.dnsIp || '--' }</Descriptions.Item>
+    <Descriptions.Item span={3} label="Ips">{ record.ips || '--' }</Descriptions.Item>
+    <Descriptions.Item span={3} label="PortIps">{ record.portIps || '--' }</Descriptions.Item>
+    <Descriptions.Item span={3} label="TcpIps">{ record.tcpIps || '--' }</Descriptions.Item>
+  </Descriptions>)
+}
 
 
 export default Region1;

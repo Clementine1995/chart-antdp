@@ -134,7 +134,6 @@ export default () => {
       size: 20,
       current: page
     }).then(res => {
-      console.log(res)
       const { data } = res
       if (data.records && data.records.length) {
         setTableData(data.records.map((item, index) => {

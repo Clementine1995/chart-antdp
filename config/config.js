@@ -114,6 +114,7 @@ export default {
             {
               name: 'list.table-list',
               icon: 'table',
+              hideInMenu: true,
               path: '/list',
               component: './ListTableList',
             },

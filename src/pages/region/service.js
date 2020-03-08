@@ -16,22 +16,23 @@ export async function getEvaluationValues (params) {
   });
 }
 
-export async function removeRule(params) {
-  return request('/api/rule', {
+
+// http://106.54.192.199:8801/myGradSystem/grad/getDetailLineChart
+
+export async function getDetailLineChart(params) {
+  return request('http://106.54.192.199:8801/myGradSystem/grad/getDetailLineChart', {
     method: 'POST',
-    data: { ...params, method: 'delete' },
+    data: { ...params },
   });
 }
-export async function addRule(params) {
-  return request('/api/rule', {
+
+
+// http://106.54.192.199:8801/myGradSystem/grad/getDetailForm
+
+export async function getDetailForm(params) {
+  return request('http://106.54.192.199:8801/myGradSystem/grad/getDetailForm', {
     method: 'POST',
-    data: { ...params, method: 'post' },
-  });
-}
-export async function updateRule(params) {
-  return request('/api/rule', {
-    method: 'POST',
-    data: { ...params, method: 'update' },
+    data: { ...params },
   });
 }
 
