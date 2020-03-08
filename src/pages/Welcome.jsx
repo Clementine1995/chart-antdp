@@ -3,9 +3,9 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { Table, Radio , DatePicker , Button , message , Result} from 'antd';
 import Link from 'umi/link';
 
-
 import { Chart, Geom, Axis, Tooltip } from "bizcharts";
 
+import { getDay } from '../utils/utils'
 import styles from './Welcome.less';
 import { queryRegion, getEvaluationValues } from './region/service';
 
@@ -60,8 +60,8 @@ function formatChart (data) {
 export default () => {
   const [chartAllData, setChartAllData] = useState({})
   const [chartData, setChartData] = useState({})
-  const [chartRange, setchartRange] = useState([])
-  const [tableRange, settableRange] = useState([])
+  const [chartRange, setchartRange] = useState(() => [getDay(-3), getDay(0)])
+  const [tableRange, settableRange] = useState(() => [getDay(-3), getDay(0)])
 
   const [tableData, setTableData] = useState([])
   const [pageInfo, setpageInfo] = useState({ total: 0, current: 1 })
@@ -87,9 +87,10 @@ export default () => {
   }
 
   useEffect(() => {
+    const [startDt, endDt] = chartRange
     handleQuery({
-      startDt: '2020-02-12',
-      endDt: '2020-02-24'
+      startDt,
+      endDt
     }).then(res => {
       
       const { data } = res

@@ -57,3 +57,26 @@ export const getRouteAuthority = (path, routeData) => {
   });
   return authorities;
 };
+
+export function getDay(day){  
+  const today = new Date();  
+    
+  const targetdayMilliseconds=today.getTime() + 1000*60*60*24*day;          
+
+  today.setTime(targetdayMilliseconds); // 注意，这行是关键代码
+    
+  const tYear = today.getFullYear();  
+  let tMonth = today.getMonth();  
+  let tDate = today.getDate();  
+  tMonth = doHandleMonth(tMonth + 1);  
+  tDate = doHandleMonth(tDate);  
+  return `${tYear}-${tMonth}-${tDate}`;  
+}
+
+function doHandleMonth(month){  
+  let m = month;  
+  if(month.toString().length === 1){  
+     m = `0${  month}`;  
+  }  
+  return m
+}
