@@ -45,6 +45,7 @@ const reflectMap = {
 
 const cols = {
   evaluation: {
+    type: 'linear',
     min: 0,
     max: 1
   }
