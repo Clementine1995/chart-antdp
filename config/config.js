@@ -126,6 +126,30 @@ export default {
               component: './region/index',
             },
             {
+              name: 'region.bj',
+              icon: 'home',
+              path: '/regionbj',
+              component: './region/region',
+            },
+            {
+              name: 'region.sh',
+              icon: 'home',
+              path: '/regionsh',
+              component: './region/region',
+            },
+            {
+              name: 'region.zj',
+              icon: 'home',
+              path: '/regionzj',
+              component: './region/region',
+            },
+            {
+              name: 'region.gd',
+              icon: 'home',
+              path: '/regiongd',
+              component: './region/region',
+            },
+            {
               component: './404',
             },
           ],

@@ -36,6 +36,19 @@ export async function getDetailForm(params) {
   });
 }
 
+export async function getDomains(params) {
+  return request('http://106.54.192.199:8801/myGradSystem/grad/getDomains', {
+    method: 'POST',
+    data: { ...params },
+  });
+}
+
+export async function getDnsRelated(params) {
+  return request('http://106.54.192.199:8801/myGradSystem/grad/getDnsRelated', {
+    method: 'POST',
+    data: { ...params },
+  });
+}
 
 // http://106.54.192.199:8801/myGradSystem/grad/getIndexLineChart
 // url: "http://127.0.0.1:8800/myGradSystem/grad/getIndexLineChart",

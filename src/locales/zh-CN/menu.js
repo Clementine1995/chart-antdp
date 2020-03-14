@@ -50,5 +50,8 @@ export default {
   'menu.editor.mind': '脑图编辑器',
   'menu.editor.koni': '拓扑编辑器',
   'menu.region.region1': '详情',
-  'menu.region.region2': '地区二',
+  'menu.region.bj': '北京',
+  'menu.region.sh': '上海',
+  'menu.region.zj': '浙江',
+  'menu.region.gd': '广东',
 };
