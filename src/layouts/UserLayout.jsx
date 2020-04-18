@@ -1,10 +1,8 @@
-import { DefaultFooter, getMenuData, getPageTitle } from '@ant-design/pro-layout';
+import { getMenuData, getPageTitle } from '@ant-design/pro-layout';
 import { Helmet } from 'react-helmet';
-import { Link } from 'umi';
 import React from 'react';
 import { formatMessage } from 'umi-plugin-react/locale';
 import { connect } from 'dva';
-import logo from '../assets/logo.svg';
 import styles from './UserLayout.less';
 
 const UserLayout = props => {
@@ -37,17 +35,15 @@ const UserLayout = props => {
       <div className={styles.container}>
         <div className={styles.content}>
           <div className={styles.top}>
-            <div className={styles.header}>
+            {/* <div className={styles.header}>
               <Link to="/">
                 <img alt="logo" className={styles.logo} src={logo} />
                 <span className={styles.title}>Ant Design</span>
               </Link>
-            </div>
-            <div className={styles.desc}>Ant Design 是西湖区最具影响力的 Web 设计规范</div>
+            </div> */}
           </div>
           {children}
         </div>
-        <DefaultFooter />
       </div>
     </>
   );

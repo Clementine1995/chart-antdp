@@ -4,6 +4,8 @@ import { fakeAccountLogin } from '@/services/login';
 import { setAuthority } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
 
+import { message  } from 'antd';
+
 // UI 组件交互操作；
 // 调用 model 的 effect；
 // 调用统一管理的 service 请求函数；
@@ -23,12 +25,13 @@ const Model = {
         type: 'changeLoginStatus',
         payload: response,
       }); // Login successfully
-
-      if (response.status === 'ok') {
+      
+      if (response.success) {
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
         let { redirect } = params;
-
+        
+        window.sessionStorage.setItem('loginInfo', response.data)
         if (redirect) {
           const redirectUrlParams = new URL(redirect);
 
@@ -45,6 +48,8 @@ const Model = {
         }
 
         router.replace(redirect || '/');
+      } else {
+        message.error(response.msg)
       }
     },
 
@@ -52,6 +57,7 @@ const Model = {
       const { redirect } = getPageQuery(); // Note: There may be security issues, please note
 
       if (window.location.pathname !== '/user/login' && !redirect) {
+        window.sessionStorage.removeItem('loginInfo')
         router.replace({
           pathname: '/user/login',
           search: stringify({
