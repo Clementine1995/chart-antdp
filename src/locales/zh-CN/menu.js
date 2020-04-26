@@ -54,4 +54,5 @@ export default {
   'menu.region.sh': '上海',
   'menu.region.zj': '浙江',
   'menu.region.gd': '广东',
+  'menu.warning': '预警'
 };

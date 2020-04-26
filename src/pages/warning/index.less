@@ -1,0 +1,35 @@
+@import '~antd/lib/style/themes/default.less';
+
+.pre {
+  margin: 12px 0;
+  padding: 12px 20px;
+  background: @input-bg;
+  box-shadow: @card-shadow;
+}
+
+.regionTable{
+  display: block;
+  .regionTableHeader{
+    display: flex;
+    justify-content: space-between;
+    :global {
+      .ant-picker{
+        margin-right: 8px;
+      }
+      .ant-select{
+        margin-right: 8px;
+      }
+    }
+    .searchInput{
+      display: inline-block;
+    }
+    .searchBtn{
+      button{
+        margin-left: 8px;
+      }
+    }
+  }
+  .regionTableMain{
+    margin-top: 20px;
+  }
+}

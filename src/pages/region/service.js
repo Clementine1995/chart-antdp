@@ -50,10 +50,10 @@ export async function getDnsRelated(params) {
   });
 }
 
-// http://106.54.192.199:8801/myGradSystem/grad/getIndexLineChart
-// url: "http://127.0.0.1:8800/myGradSystem/grad/getIndexLineChart",
-//        contentType: 'application/json;charset=UTF-8',
-//        data: JSON.stringify({
-//         startDt: dateStart,
-//         endDt: dateEnd // 传过去的值
-//        }),
+export async function getGradAalter(params) {
+  return request('http://49.233.219.204:8801/myGradSystem/grad/alter', {
+    method: 'POST',
+    data: { ...params },
+  });
+}
+

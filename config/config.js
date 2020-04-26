@@ -127,27 +127,33 @@ export default {
             },
             {
               name: 'region.bj',
-              icon: 'home',
+              icon: 'BarChartOutlined',
               path: '/regionbj',
               component: './region/region',
             },
             {
               name: 'region.sh',
-              icon: 'home',
+              icon: 'BarChartOutlined',
               path: '/regionsh',
               component: './region/region',
             },
             {
               name: 'region.zj',
-              icon: 'home',
+              icon: 'BarChartOutlined',
               path: '/regionzj',
               component: './region/region',
             },
             {
               name: 'region.gd',
-              icon: 'home',
+              icon: 'BarChartOutlined',
               path: '/regiongd',
               component: './region/region',
+            },
+            {
+              path: '/warning',
+              name: 'warning',
+              icon: 'WarningOutlined',
+              component: './warning/index',
             },
             {
               component: './404',
