@@ -123,7 +123,7 @@ export default () => {
               <Option value="4">广东</Option>
             </Select>
             <div className={styles.searchInput}>
-              评估值：<InputNumber placeholder="" type="number" defaultValue={tableParam.alterNum} min={0} max={1} step={0.1} onBlur={tableInputChg} />个
+              评估值：<InputNumber placeholder="" type="number" defaultValue={tableParam.alterNum} min={0} max={1} step={0.1} onBlur={tableInputChg} />（介于0~1之间）
             </div>
           </div>
           
