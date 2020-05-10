@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { message , Table, Result, Descriptions } from 'antd';
+import { message , Table, Result, Descriptions, Button } from 'antd';
 
 
 import {
@@ -132,6 +132,11 @@ const Region1 = props => {
     })
   }
 
+  function download() {
+    // 下载接口地址
+    const url = `http://49.233.219.204:8801/myGradSystem/grad/downloadFrom?startDt=${routeInfo.startDt}&endDt=${routeInfo.endDt}&placeType=${routeInfo.type}&domain=${routeInfo.domain}`
+    window.open(url)
+  }
 
   return (<PageHeaderWrapper title={`${routeInfo.domain}-${reflectMap[routeInfo.type]}(${routeInfo.startDt}/${routeInfo.endDt})`}>
     <div className={styles.pre}>
@@ -162,6 +167,9 @@ const Region1 = props => {
       }
     </div>
     <div className={`${styles.pre} ${styles.detailTable}`}>
+      <div className={styles.searchBtn}>
+        <Button type="primary" onClick={download}>下载</Button>
+      </div>
       <Table
         dataSource={tableData}
         className={styles.regionTableMain}
@@ -172,10 +180,10 @@ const Region1 = props => {
         bordered
         pagination={paginationProps}>
         <Column title="时间" dataIndex="dt" key="dt" />
-        <Column title="dns" dataIndex="dnsNum" key="dnsNum" />
-        <Column title="ip" dataIndex="ipNum" key="ipNum" />
-        <Column title="port" dataIndex="portNum" key="portNum" />
-        <Column title="tcp_above" dataIndex="tcpAbove" key="tcpAbove" />
+        <Column title="响应站点有效IP的DNS递归服务器比例" dataIndex="dnsNum" key="dnsNum" />
+        <Column title="响应有效IP可连通的有效IP比例" dataIndex="ipNum" key="ipNum" />
+        <Column title="可连通且80、443开放的有效IP比例" dataIndex="portNum" key="portNum" />
+        <Column title="可响应站点内容的有效IP比例" dataIndex="tcpAbove" key="tcpAbove" />
       </Table>
     </div>
   </PageHeaderWrapper>)
@@ -183,10 +191,10 @@ const Region1 = props => {
 
 function expandRender(record) {
   return (<Descriptions title="详细信息">
-    <Descriptions.Item span={3} label="DnsIp">{ record.dnsIp || '--' }</Descriptions.Item>
-    <Descriptions.Item span={3} label="Ips">{ record.ips || '--' }</Descriptions.Item>
-    <Descriptions.Item span={3} label="PortIps">{ record.portIps || '--' }</Descriptions.Item>
-    <Descriptions.Item span={3} label="TcpIps">{ record.tcpIps || '--' }</Descriptions.Item>
+    <Descriptions.Item span={3} label="响应站点有效IP的DNS递归服务器">{ record.dnsIp || '--' }</Descriptions.Item>
+    <Descriptions.Item span={3} label="响应有效IP可连通的有效IP">{ record.ips || '--' }</Descriptions.Item>
+    <Descriptions.Item span={3} label="可连通且80、443开放的有效IP">{ record.portIps || '--' }</Descriptions.Item>
+    <Descriptions.Item span={3} label="可响应站点内容的有效IP">{ record.tcpIps || '--' }</Descriptions.Item>
   </Descriptions>)
 }
 

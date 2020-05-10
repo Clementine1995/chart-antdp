@@ -11,7 +11,7 @@ export default {
   menu: {
     locale: true,
   },
-  title: 'My Charts',
+  title: '展示及预警系统',
   pwa: false,
   iconfontUrl: '',
 };

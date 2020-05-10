@@ -5,7 +5,7 @@ import { connect } from 'dva';
 import LoginFrom from './components/Login';
 import styles from './style.less';
 
-const { Tab, UserName, Password, Submit } = LoginFrom;
+const { UserName, Password, Submit } = LoginFrom;
 
 const LoginMessage = ({ content }) => (
   <Alert
@@ -34,6 +34,7 @@ const Login = props => {
 
   return (
     <div className={styles.main}>
+      <div className={styles.proName}>展示及预警系统</div>
       <LoginFrom activeKey={type} onTabChange={setType} onSubmit={handleSubmit}>
         <div>
           {status === 'error' && loginType === 'account' && !submitting && (

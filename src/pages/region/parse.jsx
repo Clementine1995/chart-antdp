@@ -1,52 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { DatePicker, message, Button , List, Card, Table , Input } from 'antd';
+import { DatePicker, Button , Table , Input, Select } from 'antd';
 
 
 import styles from './index.less';
-import { getDomains, getDnsRelated } from './service';
+import { getDnsRelated } from './service';
 import { getDay } from '../../utils/utils'
 
-const { RangePicker } = DatePicker
 const { Column } = Table
 
-const reflectMap = {
-  '/regionbj': {
-    type: 1,
-    title: '北京'
-  },
-  '/regionsh': {
-    type: 2,
-    title: '上海'
-  },
-  '/regionzj': {
-    type: 3,
-    title: '浙江'
-  },
-  '/regiongd': {
-    type: 4,
-    title: '广东'
-  }
-}
+const { Option } = Select;
 
-const handleQuery = async params => {
-  try {
-    const result = await getDomains(params);
-    return result;
-  } catch (error) {
-    message.error('获取数据失败');
-    return []
-  }
-};
+const Region1 = () => {
 
-const Region1 = props => {
-  const [chartRange, setchartRange] = useState(() => ['', ''])
   const [tableParam, setTableParam] = useState({
     date: '',
-    rank: ''
+    rank: '',
+    placeType: '1'
   })
-  const [isLoad, setIsLoad] = useState(false)
-  const [listData, setListData] = useState([])
+
   const [tableData, setTableData] = useState([])
   const [loading, setLoading] = useState(false)
 
@@ -61,10 +33,8 @@ const Region1 = props => {
     showTotal: () => `共 ${pageInfo.total} 条`
   }
 
-  const { pathname } = props.location
 
   useEffect(() => {
-    listQuery()
     tableQuery(1, getDay(0))
   }, [])
   
@@ -73,11 +43,6 @@ const Region1 = props => {
     tableQuery(page)
   }
 
-
-  function chartQuery () {
-    const [startDt, endDt] = chartRange
-    listQuery(startDt, endDt)
-  }
   function handleTableQuery () {
     tableQuery(1)
   }
@@ -87,7 +52,7 @@ const Region1 = props => {
     getDnsRelated({
       startDt: startDtDef || tableParam.date,
       limit: tableParam.rank ? Number(tableParam.rank) : '',
-      placeType: reflectMap[pathname].type,
+      placeType: tableParam.placeType,
       size: 10,
       current: page
     }).then(res => {
@@ -113,31 +78,9 @@ const Region1 = props => {
       setLoading(false)
     })
   }
-
-  function listQuery (startDt = getDay(-3), endDt = getDay(0)) {
-    setIsLoad(true)
-    handleQuery({
-      placeType: reflectMap[pathname].type,
-      startDt,
-      endDt
-    }).then(res => {
-      const { data } = res
-      if (data && data.length) {
-        setListData(data)
-      } else {
-        setListData([])
-      }
-    }).catch(error => {
-      message.error(error)
-    }).finally(() => {
-      setIsLoad(false)
-    })
+  function handleSelect(value) {
+    setTableParam(pre => ({...pre, placeType: value}))
   }
-
-  function chartDateChg (dates, date) {
-    setchartRange(date)    
-  }
-
   function tableDateChg (dates, date) {
     setTableParam(pre => ({...pre, date}))
   }
@@ -152,7 +95,12 @@ const Region1 = props => {
         <div className={styles.regionTableInput}>
           前<Input placeholder="" type="number" onBlur={tableInputChg} />个
         </div>
-        
+        <Select defaultValue="1" style={{ width: 120 }} onChange={handleSelect}>
+          <Option value="1">北京</Option>
+          <Option value="2">上海</Option>
+          <Option value="3" >浙江</Option>
+          <Option value="4">广东</Option>
+        </Select>
         <Button type="primary" onClick={handleTableQuery}>查询</Button>
       </div>
       <div className={styles.regionDomain} >
@@ -166,26 +114,6 @@ const Region1 = props => {
           <Column title="运营商" dataIndex="dnsOperator" key="dnsOperator" />
           <Column title="解析个数" dataIndex="relatedNums" key="relatedNums" />
         </Table>
-      </div>
-    </div>
-    <div className={styles.pre}>
-      <div className={styles.regionChartHeader} >
-        <RangePicker onChange={chartDateChg}/>
-        <Button type="primary" onClick={chartQuery}>查询</Button>
-      </div>
-      <div className={styles.regionDomain} >
-         <List
-          size="small"
-          grid={{ gutter: 8, xs: 2, sm: 4, md: 4, lg: 6, xl: 6, xxl: 8 }}
-          loading={isLoad}
-          bordered
-          dataSource={listData}
-          renderItem={item => (
-            <List.Item>
-              <Card>{item}</Card>
-            </List.Item>
-          )}
-        />,
       </div>
     </div>
   </PageHeaderWrapper>

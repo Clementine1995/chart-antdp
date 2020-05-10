@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { Table, Radio , DatePicker , Button , message , Result} from 'antd';
-import Link from 'umi/link';
+import { Radio , DatePicker , Button , message , Result, List, Card, Select } from 'antd';
 
 import { Chart, Geom, Axis, Tooltip } from "bizcharts";
 
 import { getDay } from '../utils/utils'
 import styles from './Welcome.less';
-import { queryRegion, getEvaluationValues } from './region/service';
+import { queryRegion, getDomains } from './region/service';
 
 const { RangePicker } = DatePicker;
 
-const { Column } = Table;
+const { Option } = Select;
 
 const cols = {
   nums: {
@@ -29,15 +28,6 @@ const handleQuery = async params => {
   }
 };
 
-const queryTableData = async params => {
-  try {
-    const result = await getEvaluationValues(params);
-    return result;
-  } catch (error) {
-    message.error('获取数据失败');
-    return []
-  }
-}
 
 function formatChart (data) {
   if (data && data.length) {
@@ -61,23 +51,12 @@ export default () => {
   const [chartAllData, setChartAllData] = useState({})
   const [chartData, setChartData] = useState({})
   const [chartRange, setchartRange] = useState(() => [getDay(-3), getDay(0)])
-  const [tableRange, settableRange] = useState(() => [getDay(-3), getDay(0)])
+  const [listRange, setlistRange] = useState(() => [getDay(-3), getDay(0)])
+  const [isLoad, setIsLoad] = useState(false)
+  const [placeType, setPlaceType] = useState('1')
 
-  const [tableData, setTableData] = useState([])
-  const [pageInfo, setpageInfo] = useState({ total: 0, current: 1 })
-  const [loading, setLoading] = useState(false)
-
-  const paginationProps = {
-    current: pageInfo.current,
-    defaultPageSize: 20,
-    onChange : page => tablePageChange(page),
-    total: pageInfo.total,
-    showTotal: () => `共 ${pageInfo.total} 条`
-  }
-
-  function tablePageChange (page) {
-    tableQuery(page)
-  }
+  const [listData, setListData] = useState([])
+ 
 
   function onRadioChange(e) {
     const selected = e.target.value
@@ -101,8 +80,7 @@ export default () => {
     }).catch(error => {
       message.error(error)
     })
-    
-    tableQuery()
+    listQuery()
   }, [])
 
   function chartQuery () {
@@ -123,52 +101,48 @@ export default () => {
     }
   }
 
-  function handleTableQuery () {
-    tableQuery(1)
+  function listQuery () {
+    const [startDt, endDt] = listRange
+    getListData(startDt, endDt)
   }
-  function tableQuery (page = 1) {
-    const [startDt, endDt] = tableRange
-    setLoading(true)
-    queryTableData({
+
+  function getListData (startDt = getDay(-3), endDt = getDay(0)) {
+    setIsLoad(true)
+    getDomains({
+      placeType,
       startDt,
-      endDt,
-      size: 20,
-      current: page
+      endDt
     }).then(res => {
       const { data } = res
-      if (data.records && data.records.length) {
-        setTableData(data.records.map((item, index) => {
-          item.key = index
-          return item
-        }))
-        setpageInfo({
-          total: data.total,
-          current: data.current
-        })
+      if (data && data.length) {
+        setListData(data)
       } else {
-        setTableData([])
-        setpageInfo({
-          total: 0,
-          current: 1
-        })
+        setListData([])
       }
-      
+    }).catch(error => {
+      message.error(error)
     }).finally(() => {
-      setLoading(false)
+      setIsLoad(false)
     })
   }
 
+  function handleSelect(value) {
+    setPlaceType(value)
+  }
   function chartDateChg (dates, date) {
     setchartRange(date)    
   }
 
-  function tableDateChg (dates, date) {
-    settableRange(date)    
+  function listDateChg (dates, date) {
+    setlistRange(date)    
   }
 
   return (
     <PageHeaderWrapper>
       <div className={styles.pre}>
+        <div className={styles.blockTitle}>
+          可访问的可疑站点数量变化情况
+        </div>
         <div className={styles.regionChartHeader} >
           <div>
             <RangePicker onChange={chartDateChg}/>
@@ -210,39 +184,34 @@ export default () => {
           }
         </div>
       </div>
-      <div className={`${styles.pre} ${styles.regionTable}`}>
-        <div className={styles.regionTableHeader}>
-          <RangePicker onChange={tableDateChg}/>
-          <Button type="primary" onClick={handleTableQuery}>查询</Button>
+      <div className={styles.pre}>
+        <div className={styles.blockTitle}>
+          可访问的可疑站点名单
         </div>
-        <Table dataSource={tableData} className={styles.regionTableMain} loading={loading} bordered pagination={paginationProps}>
-          <Column title="domain" dataIndex="domain" key="domain" sorter={(a, b) => a.domain > b.domain}/>
-          <Column title="北京" dataIndex="bjEvaluationValue" key="bjEvaluationValue" sorter={(a, b) => a.bjEvaluationValue - b.bjEvaluationValue}
-            render={(text, record) => (
-              <Link to={`/detail?type=1&domain=${record.domain}&startDt=${tableRange[0]}&endDt=${tableRange[1]}`}>{record.bjEvaluationValue}</Link>
-            )} />
-          <Column title="上海" dataIndex="shEvaluationValue" key="shEvaluationValue" sorter={(a, b) => a.shEvaluationValue - b.shEvaluationValue} 
-            render={(text, record) => (
-              <Link to={`/detail?type=2&domain=${record.domain}&startDt=${tableRange[0]}&endDt=${tableRange[1]}`}>{record.shEvaluationValue}</Link>
-            )} />
-          <Column title="浙江" dataIndex="zjEvaluationValue" key="zjEvaluationValue" sorter={(a, b) => a.zjEvaluationValue - b.zjEvaluationValue}
-            render={(text, record) => (
-              <Link to={`/detail?type=3&domain=${record.domain}&startDt=${tableRange[0]}&endDt=${tableRange[1]}`}>{record.zjEvaluationValue}</Link>
-            )} />
-          <Column title="广东" dataIndex="gdEvaluationValue" key="gdEvaluationValue" sorter={(a, b) => a.gdEvaluationValue - b.gdEvaluationValue} 
-            render={(text, record) => (
-              <Link to={`/detail?type=4&domain=${record.domain}&startDt=${tableRange[0]}&endDt=${tableRange[1]}`}>{record.gdEvaluationValue}</Link>
-            )}/>
-          {/* <Column
-            title="Action"
-            key="action"
-            render={(text, record) => (
-              <span>
-                <a style={{ marginRight: 16 }}>Invite {record.lastName}</a>
-                <a>详情</a>
-              </span>
-            )}/> */}
-        </Table>
+        <div className={styles.regionListHeader} >
+          <RangePicker onChange={listDateChg}/>
+          <Select defaultValue="1" style={{ width: 120 }} onChange={handleSelect}>
+            <Option value="1">北京</Option>
+            <Option value="2">上海</Option>
+            <Option value="3" >浙江</Option>
+            <Option value="4">广东</Option>
+          </Select>
+          <Button type="primary" onClick={listQuery}>查询</Button>
+        </div>
+        <div className={styles.regionDomain} >
+          <List
+            size="small"
+            grid={{ gutter: 8, xs: 2, sm: 4, md: 4, lg: 6, xl: 6, xxl: 8 }}
+            loading={isLoad}
+            bordered
+            dataSource={listData}
+            renderItem={item => (
+              <List.Item>
+                <Card>{item}</Card>
+              </List.Item>
+            )}
+          />,
+        </div>
       </div>
     </PageHeaderWrapper>
   )

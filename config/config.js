@@ -103,13 +103,29 @@ export default {
           routes: [
             {
               path: '/',
-              redirect: '/welcome',
+              redirect: '/showmodel/site',
             },
             {
-              path: '/welcome',
-              name: 'welcome',
+              path: '/showmodel',
+              name: 'showmodel',
               icon: 'smile',
-              component: './Welcome',
+              routes: [
+                {
+                  path: "/showmodel/site",
+                  name: "site",
+                  component: './Welcome',
+                },
+                {
+                  path: "/showmodel/risk",
+                  name: "risk",
+                  component: './risk',
+                },
+                {
+                  path: "/showmodel/parse",
+                  name: "parse",
+                  component: './region/parse',
+                }
+              ]
             },
             {
               name: 'list.table-list',
@@ -124,30 +140,6 @@ export default {
               path: '/detail',
               hideInMenu: true,
               component: './region/index',
-            },
-            {
-              name: 'region.bj',
-              icon: 'BarChartOutlined',
-              path: '/regionbj',
-              component: './region/region',
-            },
-            {
-              name: 'region.sh',
-              icon: 'BarChartOutlined',
-              path: '/regionsh',
-              component: './region/region',
-            },
-            {
-              name: 'region.zj',
-              icon: 'BarChartOutlined',
-              path: '/regionzj',
-              component: './region/region',
-            },
-            {
-              name: 'region.gd',
-              icon: 'BarChartOutlined',
-              path: '/regiongd',
-              component: './region/region',
             },
             {
               path: '/warning',

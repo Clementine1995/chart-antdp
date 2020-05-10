@@ -54,5 +54,9 @@ export default {
   'menu.region.sh': '上海',
   'menu.region.zj': '浙江',
   'menu.region.gd': '广东',
-  'menu.warning': '预警'
+  'menu.warning': '预警模块',
+  'menu.showmodel.site': '可访问的可疑站点情况',
+  'menu.showmodel.risk': '可疑站点可访问风险情况',
+  'menu.showmodel.parse': 'DNS递归服务器响应情况',
+  'menu.showmodel': '展示模块'
 };
